@@ -9,3 +9,11 @@ export class AuthDto {
   @IsString()
   password: string;
 }
+
+export class RegisterDto extends AuthDto {
+  @IsString()
+  firstName?: string;
+
+  @IsString()
+  lastName?: string;
+}
