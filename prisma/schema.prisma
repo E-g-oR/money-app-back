@@ -22,4 +22,46 @@ model User {
   lastName  String?
 
   refreshHash String?
+  accounts    Account[]
+  operations  Operation[]
+
+  @@map("users")
+}
+
+model Account {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  value      Float       @default(0)
+  operations Operation[]
+
+  @@map("accounts")
+}
+
+model Operation {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  accountId Int
+  account   Account @relation(fields: [accountId], references: [id])
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+
+  type OperationType @default(EXPENSE)
+
+  value       Float   @default(0)
+  name        String
+  description String?
+
+  @@map("operations")
+}
+
+enum OperationType {
+  INCOME
+  EXPENSE
 }
