@@ -36,8 +36,10 @@ model Account {
   userId Int
   user   User @relation(fields: [userId], references: [id])
 
-  value      Float       @default(0)
-  operations Operation[]
+  value       Float       @default(0)
+  operations  Operation[]
+  name        String
+  description String?
 
   @@map("accounts")
 }
@@ -55,7 +57,7 @@ model Operation {
   type OperationType @default(EXPENSE)
 
   value       Float   @default(0)
-  name        String
+  title       String
   description String?
 
   @@map("operations")
