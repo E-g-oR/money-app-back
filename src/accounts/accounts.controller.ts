@@ -19,8 +19,8 @@ export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Post("new")
-  create(@Body() createAccountDto: CreateAccountDto) {
-    return this.accountsService.create(createAccountDto);
+  create(@Body() body: CreateAccountDto) {
+    return this.accountsService.create(body);
   }
 
   @Get()

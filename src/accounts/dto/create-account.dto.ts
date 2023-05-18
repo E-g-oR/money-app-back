@@ -13,6 +13,6 @@ export class CreateAccountDto {
   @IsString()
   name: string;
 
-  @IsString()
-  description?: string;
+  // @IsString()
+  // description?: string;
 }
