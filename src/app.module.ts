@@ -6,6 +6,7 @@ import { UsersModule } from "./users/users.module";
 import { AccessGuard } from "./auth/guard";
 import { APP_GUARD } from "@nestjs/core";
 import { AccountsModule } from "./accounts/accounts.module";
+import { OperationsModule } from './operations/operations.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AccountsModule } from "./accounts/accounts.module";
     PrismaModule,
     UsersModule,
     AccountsModule,
+    OperationsModule,
   ],
   providers: [
     {
