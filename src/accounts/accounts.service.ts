@@ -26,6 +26,8 @@ export class AccountsService {
         id: true,
         name: true,
         value: true,
+        income: true,
+        expenses: true,
       },
       orderBy: {
         updated_at: "desc",

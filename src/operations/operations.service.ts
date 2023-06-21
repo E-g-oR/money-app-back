@@ -4,6 +4,7 @@ import { UpdateOperationDto } from "./dto/update-operation.dto";
 import { PrismaService } from "../prisma/prisma.service";
 import { paginate } from "../utils/paginate";
 import { Operation, OperationType } from "@prisma/client";
+import { decimalPlaces } from "../utils/etc";
 
 @Injectable()
 export class OperationsService {
@@ -13,7 +14,7 @@ export class OperationsService {
     { accountId, ...createOperationDto }: CreateOperationDto,
     userId: number,
   ) {
-    // TODO вычесть значение, если это трата, прибавить, если доход
+    // вычесть значение, если это трата, прибавить, если доход
     const account = await this.db.account.findUnique({
       where: {
         id: accountId,
@@ -24,12 +25,23 @@ export class OperationsService {
         ? account.value + createOperationDto.value
         : account.value - createOperationDto.value;
 
+    const newAccountIncome =
+      createOperationDto.type === OperationType.INCOME
+        ? account.income + createOperationDto.value
+        : account.income;
+    const newAccountExpenses =
+      createOperationDto.type === OperationType.EXPENSE
+        ? account.expenses + createOperationDto.value
+        : account.expenses;
+
     const updateAccountValue = this.db.account.update({
       where: {
         id: accountId,
       },
       data: {
-        value: Number(newAccountValue.toFixed(2)),
+        value: decimalPlaces(newAccountValue, 2),
+        expenses: decimalPlaces(newAccountExpenses, 2),
+        income: decimalPlaces(newAccountIncome, 2),
       },
     });
 
