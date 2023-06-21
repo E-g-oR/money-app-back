@@ -41,6 +41,9 @@ model Account {
   name        String
   description String?
 
+  expenses Float @default(0)
+  income   Float @default(0)
+
   @@map("accounts")
 }
 

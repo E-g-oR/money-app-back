@@ -1,17 +1,39 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateOperationDto } from "./dto/create-operation.dto";
 import { UpdateOperationDto } from "./dto/update-operation.dto";
 import { PrismaService } from "../prisma/prisma.service";
+import { paginate } from "../utils/paginate";
+import { Operation, OperationType } from "@prisma/client";
 
 @Injectable()
 export class OperationsService {
   constructor(private db: PrismaService) {}
 
-  create(
+  async create(
     { accountId, ...createOperationDto }: CreateOperationDto,
     userId: number,
   ) {
-    return this.db.operation.create({
+    // TODO вычесть значение, если это трата, прибавить, если доход
+    const account = await this.db.account.findUnique({
+      where: {
+        id: accountId,
+      },
+    });
+    const newAccountValue =
+      createOperationDto.type === OperationType.INCOME
+        ? account.value + createOperationDto.value
+        : account.value - createOperationDto.value;
+
+    const updateAccountValue = this.db.account.update({
+      where: {
+        id: accountId,
+      },
+      data: {
+        value: Number(newAccountValue.toFixed(2)),
+      },
+    });
+
+    const createOperation = this.db.operation.create({
       data: {
         account: {
           connect: {
@@ -26,22 +48,39 @@ export class OperationsService {
         ...createOperationDto,
       },
     });
+
+    return await this.db.$transaction([updateAccountValue, createOperation]);
   }
 
-  findAll(userId: number) {
-    return this.db.operation.findMany({
+  async findAll(userId: number, page = 1, limit = 10) {
+    const operations = await this.db.operation.findMany({
       where: {
         userId,
       },
     });
+    const pagable = paginate<Operation>(operations, limit);
+    if (page < pagable.length) {
+      return pagable[page];
+    } else {
+      throw new NotFoundException("");
+    }
   }
 
-  findAllForAccount(accountId: number) {
-    return this.db.operation.findMany({
+  async findAllForAccount(accountId: number, page = 1, limit = 10) {
+    const operations = await this.db.operation.findMany({
       where: {
         accountId,
       },
+      orderBy: {
+        created_at: "desc",
+      },
     });
+    const pageble = paginate(operations, limit);
+    if (page <= pageble.length) {
+      return pageble[page - 1];
+    } else {
+      throw new NotFoundException("");
+    }
   }
 
   findOne(id: number) {

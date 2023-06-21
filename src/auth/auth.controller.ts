@@ -42,7 +42,6 @@ export class AuthController {
   @UseGuards(RefreshGuard)
   @Post("refresh")
   refreshTokens(@GetUser() user: User) {
-    console.log("\n [user]: ", user);
     return this.authService.refreshTokens({ sub: user.id, email: user.email });
   }
 }

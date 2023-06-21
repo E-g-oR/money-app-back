@@ -7,13 +7,11 @@ import { PrismaService } from "../prisma/prisma.service";
 export class AccountsService {
   constructor(private db: PrismaService) {}
 
-  async create({ userId, ...createAccountDto }: CreateAccountDto) {
+  async create(userId: number, createAccountDto: CreateAccountDto) {
     const newAccount = await this.db.account.create({
       data: {
         ...createAccountDto,
-        user: {
-          connect: { id: userId },
-        },
+        userId,
       },
     });
     return newAccount;
@@ -23,6 +21,14 @@ export class AccountsService {
     const accounts = await this.db.account.findMany({
       where: {
         userId,
+      },
+      select: {
+        id: true,
+        name: true,
+        value: true,
+      },
+      orderBy: {
+        updated_at: "desc",
       },
     });
     return accounts;

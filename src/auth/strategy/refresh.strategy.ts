@@ -16,13 +16,8 @@ export class RefreshStrategy extends PassportStrategy(Strategy, "jwt-refresh") {
   }
 
   async validate(req: Request, payload: { sub: number; email: string }) {
-    console.log("\n req: ", req, "\n payload:", payload);
-
     const refreshToken = req.get("authorization").split(" ")[1];
 
-    console.log("\n [refreshToken]: ", refreshToken);
-
-    // console.log({ payload });
     const { hash, ...user } = await this.prisma.user.findUnique({
       where: {
         id: payload.sub,
