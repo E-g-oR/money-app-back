@@ -48,14 +48,13 @@ export class AccountsService {
     return account;
   }
 
-  async update(id: number, updateAccountDto: UpdateAccountDto) {
-    const account = await this.db.account.update({
+  update(id: number, updateAccountDto: UpdateAccountDto) {
+    return this.db.account.update({
       where: {
         id,
       },
       data: updateAccountDto,
     });
-    return account;
   }
 
   async remove(id: number) {

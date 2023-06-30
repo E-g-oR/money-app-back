@@ -61,7 +61,7 @@ export class OperationsService {
       },
     });
 
-    return await this.db.$transaction([updateAccountValue, createOperation]);
+    return this.db.$transaction([updateAccountValue, createOperation]);
   }
 
   async findAll(userId: number, page = 1, limit = 10) {

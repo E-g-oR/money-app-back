@@ -25,7 +25,7 @@
     "db:up": "docker compose up money-app-dev-db -d",
     "db:g": "npx prisma migrate dev",
     "db:rm": "docker compose rm money-app-dev-db -s -f -v",
-    "db:restart": "yarn db:rm && yarn db:up && yarn db:g && yarn db:studio",
+    "db:restart": "yarn db:rm && yarn db:up && sleep 3 && yarn db:g && yarn db:studio",
     "db:studio": "npx prisma studio"
   },
   "dependencies": {

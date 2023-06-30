@@ -6,7 +6,8 @@ import { UsersModule } from "./users/users.module";
 import { AccessGuard } from "./auth/guard";
 import { APP_GUARD } from "@nestjs/core";
 import { AccountsModule } from "./accounts/accounts.module";
-import { OperationsModule } from './operations/operations.module';
+import { OperationsModule } from "./operations/operations.module";
+import { DepthsModule } from "./depths/depths.module";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { OperationsModule } from './operations/operations.module';
     UsersModule,
     AccountsModule,
     OperationsModule,
+    DepthsModule,
   ],
   providers: [
     {

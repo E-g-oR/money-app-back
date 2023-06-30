@@ -24,6 +24,7 @@ model User {
   refreshHash String?
   accounts    Account[]
   operations  Operation[]
+  Depth       Depth[]
 
   @@map("users")
 }
@@ -69,4 +70,21 @@ model Operation {
 enum OperationType {
   INCOME
   EXPENSE
+}
+
+model Depth {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  value        Float
+  valueCovered Float    @default(0)
+  title        String
+  description  String?
+  deadline     DateTime
+
+  @@map("depths")
 }
