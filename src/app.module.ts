@@ -8,6 +8,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { AccountsModule } from "./accounts/accounts.module";
 import { OperationsModule } from "./operations/operations.module";
 import { DepthsModule } from "./depths/depths.module";
+import { ChartsModule } from './charts/charts.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { DepthsModule } from "./depths/depths.module";
     AccountsModule,
     OperationsModule,
     DepthsModule,
+    ChartsModule,
   ],
   providers: [
     {
