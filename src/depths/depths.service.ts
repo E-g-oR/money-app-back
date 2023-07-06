@@ -4,7 +4,7 @@ import { PayDepthDto, UpdateDepthDto } from "./dto/update-depth.dto";
 import { PrismaService } from "../prisma/prisma.service";
 import { AccountsService } from "../accounts/accounts.service";
 import { OperationsService } from "../operations/operations.service";
-import { OperationType } from "@prisma/client";
+import { sortDepts } from "../utils/depts";
 
 @Injectable()
 export class DepthsService {
@@ -27,12 +27,21 @@ export class DepthsService {
     });
   }
 
-  findAll(userId: number) {
-    return this.db.depth.findMany({
+  /**
+   * Get all depts for user
+   *
+   * @param userId
+   *
+
+   */
+  async findAll(userId: number) {
+    const depts = await this.db.depth.findMany({
       where: {
         userId,
       },
     });
+
+    return sortDepts(depts);
   }
 
   findOne(id: number) {
