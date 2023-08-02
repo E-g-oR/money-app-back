@@ -17,8 +17,8 @@ export class AccountsService {
     return newAccount;
   }
 
-  async findAll(userId: number) {
-    const accounts = await this.db.account.findMany({
+  findAll(userId: number) {
+    return this.db.account.findMany({
       where: {
         userId,
       },
@@ -33,7 +33,6 @@ export class AccountsService {
         updated_at: "desc",
       },
     });
-    return accounts;
   }
 
   async findOne(id: number) {

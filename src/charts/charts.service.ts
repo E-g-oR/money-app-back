@@ -7,7 +7,7 @@ import * as O from "fp-ts/Option";
 import * as RR from "fp-ts/ReadonlyRecord";
 import { Eq } from "fp-ts/string";
 import { endOfMonth, endOfYear, startOfMonth, startOfYear } from "date-fns";
-import { processTransactionsToChartData } from "../utils/charts";
+import { processTransactionsToChartData, ChartLine } from "../utils/charts";
 
 @Injectable()
 export class ChartsService {
@@ -65,6 +65,6 @@ export class ChartsService {
       .getExpenses(userId, start, end)
       .then(processTransactionsToChartData);
 
-    return [incomes, expenses];
+    return { incomes, expenses };
   }
 }

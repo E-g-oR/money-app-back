@@ -25,12 +25,17 @@ const reduceValuesForDay = (acc: number, transaction: Operation) =>
 const processTransactions = flow(
   RNEA.groupBy(groupByDay),
   RR.map(A.reduce(0, reduceValuesForDay)),
+  RR.toEntries,
+  A.map(([date, value]) => ({ date, value })),
 );
 
-type ChartLine = Record<string, number>;
+export interface ChartLine {
+  data: string;
+  value: number;
+}
 type ProcessTransactionsToChartDataType = (
   transactions: ReadonlyArray<Operation>,
-) => ChartLine | null;
+) => ReadonlyArray<ChartLine> | null;
 /**
  * Function processes list of transactions, groups them by the day and calculates the sum of transactions for the day
  */

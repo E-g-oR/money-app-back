@@ -86,7 +86,7 @@ export class DepthsService {
 
     const account = await this.accountsService.findOne(payDepthDto.accountId);
 
-    const transaction = await this.transactionsService.create(
+    const [updatedAccount] = await this.transactionsService.create(
       {
         title: depth.title,
         description: depth.description,
@@ -97,9 +97,9 @@ export class DepthsService {
       userId,
     );
 
-    const updateDepth = this.update(depthId, {
+    const updateDepth = await this.update(depthId, {
       valueCovered: depth.valueCovered + payDepthDto.value,
     });
-    return await this.db.$transaction([updateDepth]);
+    return [updateDepth, updatedAccount];
   }
 }
