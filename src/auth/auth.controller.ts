@@ -13,11 +13,22 @@ import { Tokens } from "src/types";
 import { GetUser, Public } from "./decorator";
 import { User } from "@prisma/client";
 import { RefreshGuard } from "./guard";
+import {
+  ApiBody,
+  ApiHeader,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 
+@ApiTags("Authorization")
 @Controller("auth")
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  @ApiOperation({ summary: "Log in the application" })
+  @ApiBody({ type: AuthDto })
+  @ApiResponse({ type: Tokens })
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post("login")
@@ -25,6 +36,9 @@ export class AuthController {
     return this.authService.login(body);
   }
 
+  @ApiOperation({ summary: "Register in the application" })
+  @ApiBody({ type: RegisterDto })
+  @ApiResponse({ type: Tokens })
   @Public()
   @HttpCode(HttpStatus.CREATED)
   @Post("register")
@@ -38,6 +52,13 @@ export class AuthController {
     return this.authService.logout(user.id);
   }
 
+  @ApiOperation({ description: "Refresh tokens" })
+  @ApiResponse({ type: Tokens })
+  @ApiHeader({
+    name: "Authorization",
+    description: "Bearer token",
+    example: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp...",
+  })
   @Public()
   @HttpCode(HttpStatus.OK)
   @UseGuards(RefreshGuard)

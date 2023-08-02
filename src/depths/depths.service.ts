@@ -24,6 +24,14 @@ export class DepthsService {
           },
         },
       },
+      select: {
+        id: true,
+        description: true,
+        value: true,
+        title: true,
+        valueCovered: true,
+        deadline: true,
+      },
     });
   }
 
@@ -86,7 +94,7 @@ export class DepthsService {
 
     const account = await this.accountsService.findOne(payDepthDto.accountId);
 
-    const [updatedAccount] = await this.transactionsService.create(
+    await this.transactionsService.create(
       {
         title: depth.title,
         description: depth.description,
@@ -97,9 +105,8 @@ export class DepthsService {
       userId,
     );
 
-    const updateDepth = await this.update(depthId, {
+    return this.update(depthId, {
       valueCovered: depth.valueCovered + payDepthDto.value,
     });
-    return [updateDepth, updatedAccount];
   }
 }

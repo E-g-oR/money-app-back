@@ -2,7 +2,9 @@ import { Controller, Get, Param, ParseIntPipe, Query } from "@nestjs/common";
 import { ChartsService } from "./charts.service";
 import { GetUser } from "../auth/decorator";
 import { User } from "@prisma/client";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags("Charts controller")
 @Controller("charts")
 export class ChartsController {
   constructor(private readonly chartsService: ChartsService) {}
