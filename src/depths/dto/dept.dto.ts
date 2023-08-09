@@ -1,23 +1,21 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-enum OperationType {
-  INCOME = "INCOME",
-  EXPENSE = "EXPENSE",
-}
-
-export class CreateOperationDto {
+export class DeptDto {
   @ApiProperty()
-  accountId: number;
+  id: number;
 
   @ApiProperty()
   value: number;
 
   @ApiProperty()
-  type: OperationType;
+  valueCovered: number;
 
   @ApiProperty()
   title: string;
 
   @ApiProperty()
-  description?: string;
+  description: string;
+
+  @ApiProperty()
+  deadline: string;
 }

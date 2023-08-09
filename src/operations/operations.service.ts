@@ -119,4 +119,30 @@ export class OperationsService {
       },
     });
   }
+
+  getIncomes(accountId: number, startDate: Date, endDate: Date) {
+    return this.db.operation.findMany({
+      where: {
+        accountId,
+        created_at: {
+          gte: startDate,
+          lte: endDate,
+        },
+        type: OperationType.INCOME,
+      },
+    });
+  }
+
+  getExpenses(accountId: number, startDate: Date, endDate: Date) {
+    return this.db.operation.findMany({
+      where: {
+        accountId,
+        created_at: {
+          gte: startDate,
+          lte: endDate,
+        },
+        type: OperationType.EXPENSE,
+      },
+    });
+  }
 }

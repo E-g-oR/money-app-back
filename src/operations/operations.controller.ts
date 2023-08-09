@@ -13,7 +13,10 @@ import { CreateOperationDto } from "./dto/create-operation.dto";
 import { UpdateOperationDto } from "./dto/update-operation.dto";
 import { GetUser } from "../auth/decorator";
 import { User } from "@prisma/client";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { OperationDto } from "./dto/operation.dto";
 
+@ApiTags("Transactions controller")
 @Controller("transactions")
 export class OperationsController {
   constructor(private readonly operationsService: OperationsService) {}
@@ -23,27 +26,6 @@ export class OperationsController {
     @Body() createOperationDto: CreateOperationDto,
     @GetUser() user: User,
   ) {
-    /** todo expense
-     * const accountValue = account.value
-     * const newAccountValue = accountValue - incomingValue
-     *
-     * -  нужно от значения счета вычесть сумму
-     * - затем округлить значение счета до ближайшего меньшего числа
-     *
-     * const finalAccountValue = Math.floor(newAccountValue)
-     * const diff = newAccountValue - finalAccountValue
-     *
-     * записать diff, finalAccountValue, incomingValue в копилку, значение аккаунта, и операцию соответственно
-     */
-
-    /** todo income
-     * const accountValue = account.value
-     * - получить 10% от дохода
-     * const percents = incomingValue / 100 * 10
-     * const newAccountValue = accountValue + incomingValue
-     * - записать newAccountValue incomingValue в базу
-     * - создать операцию expense со значением percents для перевода в копилку
-     */
     return this.operationsService.create(createOperationDto, user.id);
   }
 
@@ -52,6 +34,8 @@ export class OperationsController {
     return this.operationsService.findAll(user.id);
   }
 
+  @ApiOperation({ summary: "Get all operations for account" })
+  @ApiResponse({ type: [OperationDto] })
   @Get("account/:accountId")
   findAllForAccount(@Param("accountId", ParseIntPipe) accountId: number) {
     return this.operationsService.findAllForAccount(accountId);
