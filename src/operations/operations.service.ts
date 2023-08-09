@@ -120,10 +120,10 @@ export class OperationsService {
     });
   }
 
-  getIncomes(userId: number, startDate: Date, endDate: Date) {
+  getIncomes(accountId: number, startDate: Date, endDate: Date) {
     return this.db.operation.findMany({
       where: {
-        userId,
+        accountId,
         created_at: {
           gte: startDate,
           lte: endDate,
@@ -132,10 +132,11 @@ export class OperationsService {
       },
     });
   }
-  getExpenses(userId: number, startDate: Date, endDate: Date) {
+
+  getExpenses(accountId: number, startDate: Date, endDate: Date) {
     return this.db.operation.findMany({
       where: {
-        userId,
+        accountId,
         created_at: {
           gte: startDate,
           lte: endDate,

@@ -1,13 +1,13 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { OperationsService } from "../operations/operations.service";
 import { PrismaService } from "../prisma/prisma.service";
-import { flow, pipe } from "fp-ts/function";
-import * as RNEA from "fp-ts/ReadonlyNonEmptyArray";
-import * as O from "fp-ts/Option";
-import * as RR from "fp-ts/ReadonlyRecord";
-import { Eq } from "fp-ts/string";
 import { endOfMonth, endOfYear, startOfMonth, startOfYear } from "date-fns";
-import { processTransactionsToChartData, ChartLine } from "../utils/charts";
+import {
+  processTransactionsToChartData,
+  processTransactionsToChartFilters,
+} from "../utils/charts";
+import { ChartDataDto } from "./dto/chart-data.dto";
+import { ChartFiltersDto } from "./dto/chart-filters.dto";
 
 @Injectable()
 export class ChartsService {
@@ -16,55 +16,49 @@ export class ChartsService {
     private db: PrismaService,
   ) {}
 
-  async getFiltersForChart(userId: number, accountId: number) {
+  async getFiltersForChart(
+    userId: number,
+    accountId: number,
+  ): Promise<ChartFiltersDto> {
     const transactions = await this.db.operation.findMany({
       where: {
         userId,
         accountId,
       },
     });
-
-    const filter = pipe(
-      transactions,
-      RNEA.fromArray,
-      O.fold(
-        () => null,
-        flow(
-          RNEA.map((item) => new Date(item.created_at)),
-          RNEA.groupBy((item) => item.getUTCFullYear().toString()),
-          RR.map(
-            flow(
-              RNEA.map((date) => date.getUTCMonth().toString()),
-              RNEA.uniq(Eq),
-            ),
-          ),
-        ),
-      ),
-    );
-    console.log(filter);
-    if (filter === null) {
-      throw new NotFoundException("No transactions in that period");
-    }
-    return filter;
+    const filter = processTransactionsToChartFilters(transactions);
+    return { data: filter };
   }
 
   async getChartDataYear(
     userId: number,
+    accountId: number,
     year: number,
     month: number,
     view: "month" | "year",
-  ) {
+  ): Promise<ChartDataDto> {
     const date = new Date(year, month),
       start = view === "year" ? startOfYear(date) : startOfMonth(date),
       end = view === "year" ? endOfYear(date) : endOfMonth(date);
 
     const incomes = await this.operationsService
-      .getIncomes(userId, start, end)
-      .then(processTransactionsToChartData);
+      .getIncomes(accountId, start, end)
+      .then(processTransactionsToChartData(view));
     const expenses = await this.operationsService
-      .getExpenses(userId, start, end)
-      .then(processTransactionsToChartData);
+      .getExpenses(accountId, start, end)
+      .then(processTransactionsToChartData(view));
 
-    return { incomes, expenses };
+    return {
+      chartLines: [
+        {
+          lineKey: "incomes",
+          lineData: incomes,
+        },
+        {
+          lineKey: "expenses",
+          lineData: expenses,
+        },
+      ],
+    };
   }
 }

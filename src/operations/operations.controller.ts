@@ -13,7 +13,8 @@ import { CreateOperationDto } from "./dto/create-operation.dto";
 import { UpdateOperationDto } from "./dto/update-operation.dto";
 import { GetUser } from "../auth/decorator";
 import { User } from "@prisma/client";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { OperationDto } from "./dto/operation.dto";
 
 @ApiTags("Transactions controller")
 @Controller("transactions")
@@ -33,6 +34,8 @@ export class OperationsController {
     return this.operationsService.findAll(user.id);
   }
 
+  @ApiOperation({ summary: "Get all operations for account" })
+  @ApiResponse({ type: [OperationDto] })
   @Get("account/:accountId")
   findAllForAccount(@Param("accountId", ParseIntPipe) accountId: number) {
     return this.operationsService.findAllForAccount(accountId);
