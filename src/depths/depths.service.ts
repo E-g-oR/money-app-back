@@ -5,6 +5,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import { AccountsService } from "../accounts/accounts.service";
 import { OperationsService } from "../operations/operations.service";
 import { sortDepts } from "../utils/depts";
+import { OperationType } from "@prisma/client";
 
 @Injectable()
 export class DepthsService {
@@ -99,8 +100,8 @@ export class DepthsService {
         title: depth.title,
         description: depth.description,
         accountId: account.id,
-        value: payDepthDto.value, // @ts-ignore
-        type: "EXPENSE",
+        value: payDepthDto.value,
+        type: OperationType.EXPENSE,
       },
       userId,
     );
