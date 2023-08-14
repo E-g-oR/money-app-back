@@ -19,7 +19,7 @@ const groupByDay = (transaction: Operation) =>
  * @param transaction
  */
 const groupByMonth = (transaction: Operation) =>
-  transaction.created_at.getMonth().toString();
+  (transaction.created_at.getMonth() + 1).toString();
 
 /**
  * Function calculates sum of all transactions for the day

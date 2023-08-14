@@ -101,6 +101,7 @@ export class DepthsService {
         description: depth.description,
         accountId: account.id,
         value: payDepthDto.value,
+        // @ts-ignore
         type: OperationType.EXPENSE,
       },
       userId,
